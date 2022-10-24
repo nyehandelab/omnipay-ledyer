@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message;
 
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\RuntimeException;

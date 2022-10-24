@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Nyehandel\Omnipay\Ledyer\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message\Oauth;
 
 abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
 {
@@ -19,14 +19,6 @@ abstract class AbstractResponse extends \Omnipay\Common\Message\AbstractResponse
     public function getMessage()
     {
         return $this->data['error_message'] ?? null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTransactionReference()
-    {
-        return $this->data['order_id'] ?? null;
     }
 
     /**

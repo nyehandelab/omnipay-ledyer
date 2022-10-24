@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message;
 
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\InvalidResponseException;
@@ -9,7 +9,7 @@ use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 
 /**
- * Creates a Klarna Checkout order if it does not exist
+ * Creates a Ledyer Checkout order if it does not exist
  */
 final class AuthorizeRequest extends AbstractOrderRequest
 {

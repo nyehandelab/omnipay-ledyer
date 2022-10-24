@@ -1,26 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace Nyehandel\Omnipay\Ledyer\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message\Oauth;
 
 use Omnipay\Common\Message\RequestInterface;
 
-final class AcknowledgeResponse extends AbstractResponse
+final class ObtainTokenResponse extends AbstractResponse
 {
     /**
      * @var int
      */
     private $statusCode;
 
-    /**
-     * @param RequestInterface $request
-     * @param mixed            $data
-     * @param int              $statusCode
-     */
-    public function __construct(RequestInterface $request, $data, $statusCode)
+    public function __construct(RequestInterface $request, $data, $transactionReference, $statusCode)
     {
         parent::__construct($request, $data);
 
+        $this->transactionReference = $transactionReference;
         $this->statusCode = $statusCode;
     }
 
@@ -37,6 +33,6 @@ final class AcknowledgeResponse extends AbstractResponse
      */
     public function isSuccessful(): bool
     {
-        return parent::isSuccessful() && 204 === $this->getStatusCode();
+        return parent::isSuccessful() && 200 === $this->statusCode;
     }
 }

@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message;
 
-use Dalholm\Omnipay\Klarna\Address;
-use Dalholm\Omnipay\Klarna\Customer;
-use Dalholm\Omnipay\Klarna\ItemBag;
-use Dalholm\Omnipay\Klarna\WidgetOptions;
+use Nyehandel\Omnipay\Ledyer\Address;
+use Nyehandel\Omnipay\Ledyer\Customer;
+use Nyehandel\Omnipay\Ledyer\ItemBag;
+use Nyehandel\Omnipay\Ledyer\WidgetOptions;
 
 abstract class AbstractOrderRequest extends AbstractRequest
 {

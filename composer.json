@@ -1,21 +1,36 @@
 {
-    "name": "dalholm/omnipay-klarna",
+    "name": "nyehandel/omnipay-ledyer",
     "type": "library",
-    "description": "Klarna Checkout gateway for Omnipay payment processing library",
-    "keywords": ["Klarna","Klarna Checkout", "Omnipay"],
-    "homepage": "https://github.com/dalholm/omnipay-klarna",
+    "description": "Ledyer Checkout gateway for Omnipay payment processing library",
+    "keywords": [
+        "gateway",
+        "merchant",
+        "omnipay",
+        "pay",
+        "payment",
+        "ledyer",
+        "purchase"
+    ],
+    "homepage": "https://github.com/nyehandelab/omnipay-ledyer",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "David Andersson",
+            "email": "david@nyehandel.se"
+        }
+    ],
     "autoload": {
-        "psr-4" : {
-            "Dalholm\\Omnipay\\Klarna\\" : "src/",
-            "Dalholm\\Tests\\Omnipay\\Klarna\\" : "tests/"
+        "psr-4": {
+            "Nyehandel\\Omnipay\\Ledyer\\" : "src/"
         }
     },
     "require": {
-        "omnipay/common": "^2.0||^3.0"
+        "omnipay/common": "^3"
     },
-    "require-dev": {
-        "omnipay/tests": "^2.0||^3.0"
+    "extra": {
+        "branch-alias": {
+            "dev-master": "3.0.x-dev"
+        }
     },
     "prefer-stable": true
 }

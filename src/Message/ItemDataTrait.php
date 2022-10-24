@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message;
 
 use Money\Money;
-use Dalholm\Omnipay\Klarna\ItemBag;
+use Nyehandel\Omnipay\Ledyer\ItemBag;
 
 trait ItemDataTrait
 {

@@ -1,12 +1,12 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna\Message;
+namespace Nyehandel\Omnipay\Ledyer\Message;
 
 use Money\Money;
-use Dalholm\Omnipay\Klarna\AuthenticationRequestHeaderProvider;
-use Dalholm\Omnipay\Klarna\CurrencyAwareTrait;
-use Dalholm\Omnipay\Klarna\ItemBag;
+use Nyehandel\Omnipay\Ledyer\AuthenticationRequestHeaderProvider;
+use Nyehandel\Omnipay\Ledyer\CurrencyAwareTrait;
+use Nyehandel\Omnipay\Ledyer\ItemBag;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
