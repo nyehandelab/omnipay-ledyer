@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna;
+namespace Nyehandel\Omnipay\Ledyer;
 
 final class Item extends \Omnipay\Common\Item implements ItemInterface
 {

@@ -1,31 +1,27 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna;
+namespace Nyehandel\Omnipay\Ledyer;
 
-use Dalholm\Omnipay\Klarna\Message\AcknowledgeRequest;
-use Dalholm\Omnipay\Klarna\Message\AuthorizeRequest;
-use Dalholm\Omnipay\Klarna\Message\CaptureRequest;
-use Dalholm\Omnipay\Klarna\Message\ExtendAuthorizationRequest;
-use Dalholm\Omnipay\Klarna\Message\FetchTransactionRequest;
-use Dalholm\Omnipay\Klarna\Message\RefundRequest;
-use Dalholm\Omnipay\Klarna\Message\UpdateCustomerAddressRequest;
-use Dalholm\Omnipay\Klarna\Message\UpdateMerchantReferencesRequest;
-use Dalholm\Omnipay\Klarna\Message\UpdateOrderRequest;
-use Dalholm\Omnipay\Klarna\Message\UpdateTransactionRequest;
-use Dalholm\Omnipay\Klarna\Message\VoidRequest;
+use Nyehandel\Omnipay\Ledyer\Message\AcknowledgeRequest;
+use Nyehandel\Omnipay\Ledyer\Message\AuthorizeRequest;
+use Nyehandel\Omnipay\Ledyer\Message\CaptureRequest;
+use Nyehandel\Omnipay\Ledyer\Message\ExtendAuthorizationRequest;
+use Nyehandel\Omnipay\Ledyer\Message\FetchTransactionRequest;
+use Nyehandel\Omnipay\Ledyer\Message\Oauth\ObtainTokenRequest;
+use Nyehandel\Omnipay\Ledyer\Message\RefundRequest;
+use Nyehandel\Omnipay\Ledyer\Message\UpdateCustomerAddressRequest;
+use Nyehandel\Omnipay\Ledyer\Message\UpdateMerchantReferencesRequest;
+use Nyehandel\Omnipay\Ledyer\Message\UpdateOrderRequest;
+use Nyehandel\Omnipay\Ledyer\Message\UpdateTransactionRequest;
+use Nyehandel\Omnipay\Ledyer\Message\VoidRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
 
 final class Gateway extends AbstractGateway implements GatewayInterface
 {
-    const API_VERSION_EUROPE = 'EU';
-    const API_VERSION_NORTH_AMERICA = 'NA';
-
-    const EU_BASE_URL = 'https://api.klarna.com';
-    const EU_TEST_BASE_URL = 'https://api.playground.klarna.com';
-    const NA_BASE_URL = 'https://api-na.klarna.com';
-    const NA_TEST_BASE_URL = 'https://api-na.playground.klarna.com';
+    const BASE_URL = 'https://api.live.ledyer.com';
+    const TEST_BASE_URL = 'https://api.sandbox.ledyer.com';
 
     /**
      * @inheritdoc
@@ -73,20 +69,11 @@ final class Gateway extends AbstractGateway implements GatewayInterface
     }
 
     /**
-     * @return string REGION_* constant value
-     */
-    public function getApiRegion(): string
-    {
-        return $this->getParameter('api_region');
-    }
-
-    /**
      * @inheritDoc
      */
     public function getDefaultParameters(): array
     {
         return [
-            'api_region' => self::API_VERSION_EUROPE,
             'secret' => '',
             'testMode' => true,
             'username' => '',
@@ -98,7 +85,7 @@ final class Gateway extends AbstractGateway implements GatewayInterface
      */
     public function getName(): string
     {
-        return 'Klarna';
+        return 'Ledyer';
     }
 
     /**
@@ -112,9 +99,9 @@ final class Gateway extends AbstractGateway implements GatewayInterface
     /**
      * @return string
      */
-    public function getUsername(): string
+    public function getId(): string
     {
-        return $this->getParameter('username');
+        return $this->getParameter('id');
     }
 
     /**
@@ -129,24 +116,17 @@ final class Gateway extends AbstractGateway implements GatewayInterface
         return $this;
     }
 
+    public function obtainOauthToken(array $parameters = [])
+    {
+        return $this->createRequest(ObtainTokenRequest::class, $parameters);
+    }
+
     /**
      * @inheritdoc
      */
     public function refund(array $options = [])
     {
         return $this->createRequest(RefundRequest::class, $options);
-    }
-
-    /**
-     * @param string $region
-     *
-     * @return $this
-     */
-    public function setApiRegion(string $region): self
-    {
-        $this->setParameter('api_region', $region);
-
-        return $this;
     }
 
     /**
@@ -166,9 +146,9 @@ final class Gateway extends AbstractGateway implements GatewayInterface
      *
      * @return $this
      */
-    public function setUsername(string $username): self
+    public function setId(string $id): self
     {
-        $this->setParameter('username', $username);
+        $this->setParameter('id', $id);
 
         return $this;
     }
@@ -213,12 +193,6 @@ final class Gateway extends AbstractGateway implements GatewayInterface
 
     private function setBaseUrl()
     {
-        if (self::API_VERSION_EUROPE === $this->getApiRegion()) {
-            $this->parameters->set('base_url', $this->getTestMode() ? self::EU_TEST_BASE_URL : self::EU_BASE_URL);
-
-            return;
-        }
-
-        $this->parameters->set('base_url', $this->getTestMode() ? self::NA_TEST_BASE_URL : self::NA_BASE_URL);
+        $this->parameters->set('base_url', $this->getTestMode() ? self::TEST_BASE_URL : self::BASE_URL);
     }
 }

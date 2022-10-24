@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Dalholm\Omnipay\Klarna;
+namespace Nyehandel\Omnipay\Ledyer;
 
 use Omnipay\Common\Message\RequestInterface;
 
