@@ -5,8 +5,8 @@ namespace Nyehandel\Omnipay\Ledyer\Message;
 
 use Money\Money;
 use Nyehandel\Omnipay\Ledyer\AuthenticationRequestHeaderProvider;
-use Nyehandel\Omnipay\Ledyer\CurrencyAwareTrait;
 use Nyehandel\Omnipay\Ledyer\ItemBag;
+use Nyehandel\Omnipay\Ledyer\TokenService;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
 use Omnipay\Common\Message\AbstractRequest as BaseAbstractRequest;
@@ -17,8 +17,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 abstract class AbstractRequest extends BaseAbstractRequest
 {
-    use CurrencyAwareTrait;
-
     /**
      * @return Money|null
      */
@@ -28,11 +26,11 @@ abstract class AbstractRequest extends BaseAbstractRequest
     }
 
     /**
-     * @return string|null REGION_* constant value
+     * @return string
      */
-    public function getApiRegion()
+    public function getId(): string
     {
-        return $this->getParameter('api_region');
+        return $this->getParameter('id');
     }
 
     /**
@@ -56,22 +54,6 @@ abstract class AbstractRequest extends BaseAbstractRequest
     /**
      * @return string|null
      */
-    public function getMerchantReference1()
-    {
-        return $this->getParameter('merchant_reference1');
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getMerchantReference2()
-    {
-        return $this->getParameter('merchant_reference2');
-    }
-
-    /**
-     * @return string|null
-     */
     public function getSecret()
     {
         return $this->getParameter('secret');
@@ -87,25 +69,6 @@ abstract class AbstractRequest extends BaseAbstractRequest
         return $this->getParameter('tax_amount');
     }
 
-    /**
-     * @return string|null
-     */
-    public function getUsername()
-    {
-        return $this->getParameter('username');
-    }
-
-    /**
-     * @param string $region
-     *
-     * @return $this
-     */
-    public function setApiRegion(string $region): self
-    {
-        $this->setParameter('api_region', $region);
-
-        return $this;
-    }
 
     /**
      * @param string $baseUrl
@@ -140,30 +103,6 @@ abstract class AbstractRequest extends BaseAbstractRequest
     }
 
     /**
-     * @param string $merchantReference
-     *
-     * @return $this
-     */
-    public function setMerchantReference1(string $merchantReference): self
-    {
-        $this->setParameter('merchant_reference1', $merchantReference);
-
-        return $this;
-    }
-
-    /**
-     * @param string $merchantReference
-     *
-     * @return $this
-     */
-    public function setMerchantReference2(string $merchantReference): self
-    {
-        $this->setParameter('merchant_reference2', $merchantReference);
-
-        return $this;
-    }
-
-    /**
      * @param string $secret
      *
      * @return $this
@@ -171,6 +110,18 @@ abstract class AbstractRequest extends BaseAbstractRequest
     public function setSecret(string $secret): self
     {
         $this->setParameter('secret', $secret);
+
+        return $this;
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return $this
+     */
+    public function setId(string $id): self
+    {
+        $this->setParameter('id', $id);
 
         return $this;
     }
@@ -184,15 +135,21 @@ abstract class AbstractRequest extends BaseAbstractRequest
     }
 
     /**
-     * @param string $username
+     * @return string|null
+     */
+    public function getOrderId()
+    {
+        return $this->getParameter('order_id');
+    }
+
+    /**
+     * @param string $id
      *
      * @return $this
      */
-    public function setUsername(string $username): self
+    public function setOrderId($value)
     {
-        $this->setParameter('username', $username);
-
-        return $this;
+        return $this->setParameter('order_id', $value);
     }
 
     /**
@@ -221,7 +178,20 @@ abstract class AbstractRequest extends BaseAbstractRequest
      */
     protected function sendRequest(string $method, string $url, $data): ResponseInterface
     {
-        $headers = (new AuthenticationRequestHeaderProvider())->getHeaders($this);
+
+        $tokenExpired = false;
+        $tokenService = new TokenService();
+        $token = $tokenService->get($this->getId());
+
+        if(is_null($token) || !property_exists($token, 'expires_at') || $tokenExpired = $token->expires_at < time()) {
+            if ($tokenExpired) {
+                $tokenService->invalidate($this->getId());
+            }
+
+            $token = $tokenService->create($this->getId(), $this->getSecret(), $this->getTestMode());
+        }
+
+        $headers = (new AuthenticationRequestHeaderProvider())->getHeaders($token->access_token);
 
         if ('GET' === $method) {
             return $this->httpClient->request(

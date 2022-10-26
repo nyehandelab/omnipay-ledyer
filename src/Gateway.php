@@ -6,6 +6,7 @@ namespace Nyehandel\Omnipay\Ledyer;
 use Nyehandel\Omnipay\Ledyer\Message\AcknowledgeRequest;
 use Nyehandel\Omnipay\Ledyer\Message\AuthorizeRequest;
 use Nyehandel\Omnipay\Ledyer\Message\CaptureRequest;
+use Nyehandel\Omnipay\Ledyer\Message\CreateOrderSessionRequest;
 use Nyehandel\Omnipay\Ledyer\Message\ExtendAuthorizationRequest;
 use Nyehandel\Omnipay\Ledyer\Message\FetchTransactionRequest;
 use Nyehandel\Omnipay\Ledyer\Message\Oauth\ObtainTokenRequest;
@@ -13,8 +14,8 @@ use Nyehandel\Omnipay\Ledyer\Message\RefundRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateCustomerAddressRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateMerchantReferencesRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateOrderRequest;
+use Nyehandel\Omnipay\Ledyer\Message\UpdateOrderSessionRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateTransactionRequest;
-use Nyehandel\Omnipay\Ledyer\Message\VoidRequest;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Message\RequestInterface;
 
@@ -22,6 +23,7 @@ final class Gateway extends AbstractGateway implements GatewayInterface
 {
     const BASE_URL = 'https://api.live.ledyer.com';
     const TEST_BASE_URL = 'https://api.sandbox.ledyer.com';
+    const VERSION = 'v1';
 
     /**
      * @inheritdoc
@@ -36,12 +38,12 @@ final class Gateway extends AbstractGateway implements GatewayInterface
      */
     public function authorize(array $options = [])
     {
-        return $this->createRequest(AuthorizeRequest::class, $options);
+        return $this->createRequest(CreateOrderSessionRequest::class, $options);
     }
 
     public function updateOrder(array $options = [])
     {
-        return $this->createRequest(UpdateOrderRequest::class, $options);
+        return $this->createRequest(UpdateOrderSessionRequest::class, $options);
     }
 
     /**
@@ -183,16 +185,8 @@ final class Gateway extends AbstractGateway implements GatewayInterface
         return $this->createRequest(UpdateMerchantReferencesRequest::class, $options);
     }
 
-    /**
-     * @inheritdoc
-     */
-    public function void(array $options = [])
-    {
-        return $this->createRequest(VoidRequest::class, $options);
-    }
-
     private function setBaseUrl()
     {
-        $this->parameters->set('base_url', $this->getTestMode() ? self::TEST_BASE_URL : self::BASE_URL);
+        $this->parameters->set('base_url', ($this->getTestMode() ? self::TEST_BASE_URL : self::BASE_URL) . '/' . self::VERSION . '/');
     }
 }

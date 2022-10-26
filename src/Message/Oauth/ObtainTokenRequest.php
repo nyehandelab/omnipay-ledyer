@@ -5,72 +5,34 @@ namespace Nyehandel\Omnipay\Ledyer\Message\Oauth;
 
 use Omnipay\Common\Exception\InvalidRequestException;
 use Omnipay\Common\Exception\InvalidResponseException;
+use Omnipay\Common\Http\Client;
 use Omnipay\Common\Http\Exception\NetworkException;
 use Omnipay\Common\Http\Exception\RequestException;
-use Omnipay\Common\Message\AbstractRequest;
 use Psr\Http\Message\ResponseInterface;
 
 /**
  * Creates a Ledyer oauth 2 token
  */
-final class ObtainTokenRequest extends AbstractRequest
+final class ObtainTokenRequest
 {
     protected $liveEndpoint = 'https://auth.live.ledyer.com';
     protected $testEndpoint = 'https://auth.sandbox.ledyer.com';
 
-    /**
-     * @inheritDoc
-     *
-     * @throws InvalidRequestException
-     */
-    public function getData()
+    protected string $id;
+    protected string $secret;
+    protected bool $testMode;
+
+
+    public function __construct(string $id, string $secret, bool $testMode)
     {
-        return [];
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getSecret()
-    {
-        return $this->getParameter('secret');
-    }
-
-    /**
-     * @param string $secret
-     *
-     * @return $this
-     */
-    public function setSecret(string $secret): self
-    {
-        $this->setParameter('secret', $secret);
-
-        return $this;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getId()
-    {
-        return $this->getParameter('id');
-    }
-
-    /**
-     * @param string $id
-     *
-     * @return $this
-     */
-    public function setId(string $id): self
-    {
-        $this->setParameter('id', $id);
-
-        return $this;
+        $this->id = $id;
+        $this->secret = $secret;
+        $this->testMode = $testMode;
     }
 
     public function getEndpoint()
     {
-        return ($this->getTestMode() ? $this->testEndpoint : $this->liveEndpoint) . '/oauth/token';
+        return ($this->testMode ? $this->testEndpoint : $this->liveEndpoint) . '/oauth/token';
     }
 
     /**
@@ -94,16 +56,17 @@ final class ObtainTokenRequest extends AbstractRequest
      * @throws RequestException when the HTTP client is passed a request that is invalid and cannot be sent.
      * @throws NetworkException if there is an error with the network or the remote server cannot be reached.
      */
-    public function sendData($data)
+    public function send()
     {
-        $authString = base64_encode($this->getId() . ':' . $this->getSecret());
+        $authString = base64_encode($this->id . ':' . $this->secret);
 
         $headers = [
             'Content-Type' => 'application/x-www-form-urlencoded',
             'Authorization' => 'Basic ' . $authString,
         ];
+        $httpClient = new Client();
 
-        $response = $this->httpClient->request(
+        $response = $httpClient->request(
             'POST',
             $this->getEndpoint(),
             $headers,
@@ -112,12 +75,6 @@ final class ObtainTokenRequest extends AbstractRequest
             ]),
         );
 
-
-            return new ObtainTokenResponse(
-                $this,
-                $this->getResponseBody($response),
-                $this->getTransactionReference(),
-                $response->getStatusCode(),
-            );
+        return $this->getResponseBody($response);
     }
 }

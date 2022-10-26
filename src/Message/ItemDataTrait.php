@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
 
-use Money\Money;
 use Nyehandel\Omnipay\Ledyer\ItemBag;
 
 trait ItemDataTrait
@@ -19,23 +18,65 @@ trait ItemDataTrait
 
         foreach ($items as $item) {
 
-            $totalAmount = ($item->getQuantity() * $item->getPrice()) - $item->getTotalDiscountAmount();
+            $item->validate(
+                'type',
+                'reference',
+                'description',
+                'quantity',
+                'price',
+                'unit_discount_amount',
+                'vat',
+            );
+
+            $totalAmount = $item->getQuantity() * ($item->getPrice() - $item->getUnitDiscountAmount());
+
             $orderLines[] = [
                 'type' => $item->getType(),
                 'reference' => $item->getReference(),
-                'name' => $item->getName(),
+                'description' => $item->getDescription(),
                 'quantity' => $item->getQuantity(),
-                'tax_rate' => (int) $item->getTaxRate(),
-                'total_amount' => (int) $totalAmount,
-                'total_tax_amount' => (int) $item->getTotalTaxAmount(),
-                'total_discount_amount' => (int) $item->getTotalDiscountAmount(),
-                'unit_price' => (int) $item->getPrice(),
-                'merchant_data' => $item->getMerchantData(),
+                'unitPrice' => (int) $item->getPrice(),
+                'unitDiscountAmount' => (int) $item->getUnitDiscountAmount(),
+                'vat' => (int) $item->getVat(),
+                'totalAmount' => (int) $totalAmount,
+                'totalVatAmount' => (int) $item->calculateTotalVatAmount(),
             ];
         }
 
         return $orderLines;
     }
 
-    abstract protected function convertToMoney($amount): Money;
+    protected function getTotalOrderAmount()
+    {
+        $totalOrderAmount = 0;
+
+        foreach ($this->getItems() as $item) {
+            $totalOrderAmount += $item->getQuantity() * ($item->getPrice() - $item->getUnitDiscountAmount());
+        }
+
+        return $totalOrderAmount;
+    }
+
+    protected function totalOrderAmountExclVat()
+    {
+
+        $totalOrderAmountExclVat = 0;
+
+        foreach ($this->getItems() as $item) {
+            $totalOrderAmountExclVat += $item->calculateTotalPriceExclVat();
+        }
+
+        return $totalOrderAmountExclVat;
+    }
+
+    protected function totalOrderVatAmount()
+    {
+        $totalOrderVatAmount = 0;
+
+        foreach ($this->getItems() as $item) {
+            $totalOrderVatAmount += $item->calculateTotalVatAmount();
+        }
+
+        return $totalOrderVatAmount;
+    }
 }

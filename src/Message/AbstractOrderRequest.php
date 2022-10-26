@@ -6,6 +6,7 @@ namespace Nyehandel\Omnipay\Ledyer\Message;
 use Nyehandel\Omnipay\Ledyer\Address;
 use Nyehandel\Omnipay\Ledyer\Customer;
 use Nyehandel\Omnipay\Ledyer\ItemBag;
+use Nyehandel\Omnipay\Ledyer\Settings;
 use Nyehandel\Omnipay\Ledyer\WidgetOptions;
 
 abstract class AbstractOrderRequest extends AbstractRequest
@@ -13,187 +14,200 @@ abstract class AbstractOrderRequest extends AbstractRequest
     use ItemDataTrait;
 
     /**
-     * @return Address|null
+     * @return string|null
      */
-    public function getBillingAddress()
+    public function getCountry()
     {
-        return $this->getParameter('billing_address');
+        return $this->getParameter('country');
     }
 
     /**
-     * @return Customer|null
+     * @param string $country
+     *
+     * @return $this
+     */
+    public function setCountry(string $country): self
+    {
+        $this->setParameter('country', $country);
+
+        return $this;
+    }
+
+    public function setCustomer($value)
+    {
+        if ($value && !$value instanceof Customer) {
+            $value = new Customer($value);
+        }
+
+        return $this->setParameter('customer', $value);
+    }
+
+    /**
+     * Get the customer.
+     *
+     * @return Customer
      */
     public function getCustomer()
     {
         return $this->getParameter('customer');
     }
 
-    /**
-     * @return bool|null
-     */
-    public function getGuiAutofocus()
+    public function setSettings($value)
     {
-        return $this->getParameter('gui_autofocus');
+        if ($value && !$value instanceof Settings) {
+            $value = new Settings($value);
+        }
+
+        return $this->setParameter('settings', $value);
     }
 
     /**
-     * @return bool|null
+     * Get the settings.
+     *
+     * @return Settings
      */
-    public function getGuiMinimalConfirmation()
+    public function getSettings()
     {
-        return $this->getParameter('gui_minimal_confirmation');
+        return $this->getParameter('settings');
     }
 
     /**
      * @return string|null
      */
-    public function getPurchaseCountry()
+    public function getMetadata()
     {
-        return $this->getParameter('purchase_country');
+        return $this->getParameter('metadata');
     }
 
     /**
-     * @return Address|null
-     */
-    public function getShippingAddress()
-    {
-        return $this->getParameter('shipping_address');
-    }
-
-    /**
-     * @return string[]|null ISO 3166 alpha-2 codes of shipping countries, or null if none are specified
-     */
-    public function getShippingCountries()
-    {
-        return $this->getParameter('shipping_countries');
-    }
-
-    /**
-     * @return WidgetOptions|null
-     */
-    public function getWidgetOptions()
-    {
-        return $this->getParameter('widget_options');
-    }
-
-    /**
-     * @param array $billingAddress
+     * @param string $metadata
      *
      * @return $this
      */
-    public function setBillingAddress($billingAddress): self
+    public function setMetadata(string $metadata): self
     {
-        $this->setParameter('billing_address', Address::fromArray($billingAddress));
+        $this->setParameter('metadata', $metadata);
 
         return $this;
     }
 
     /**
-     * @param array $customer
+     * @return string|null
+     */
+    public function getReference()
+    {
+        return $this->getParameter('reference');
+    }
+
+    /**
+     * @param string $reference
      *
      * @return $this
      */
-    public function setCustomer(array $customer): self
+    public function setReference(string $reference): self
     {
-        $this->setParameter('customer', Customer::fromArray($customer));
+        $this->setParameter('reference', $reference);
 
         return $this;
     }
 
     /**
-     * @param bool $value
+     * @return string|null
+     */
+    public function getSettlementReference()
+    {
+        return $this->getParameter('settlement_reference');
+    }
+
+    /**
+     * @param string $settlementReference
      *
      * @return $this
      */
-    public function setGuiAutofocus(bool $value): self
+    public function setSettlementReference(string $settlementReference): self
     {
-        $this->setParameter('gui_autofocus', $value);
+        $this->setParameter('settlement_reference', $settlementReference);
 
         return $this;
     }
 
     /**
-     * @param bool $value
+     * @return string|null
+     */
+    public function getSource()
+    {
+        return $this->getParameter('source');
+    }
+
+    /**
+     * @param string $source
      *
      * @return $this
      */
-    public function setGuiMinimalConfirmation(bool $value): self
+    public function setSource(string $source): self
     {
-        $this->setParameter('gui_minimal_confirmation', $value);
+        $this->setParameter('source', $source);
 
         return $this;
     }
 
     /**
-     * @param string $value
+     * @return string|null
+     */
+    public function getStoreId()
+    {
+        return $this->getParameter('store_id');
+    }
+
+    /**
+     * @param string $storeId
      *
      * @return $this
      */
-    public function setPurchaseCountry(string $value): self
+    public function setStoreId(string $storeId): self
     {
-        $this->setParameter('purchase_country', $value);
+        $this->setParameter('store_id', $storeId);
 
         return $this;
     }
 
     /**
-     * @param array $shippingAddress
+     * If a customer is supplied, then return the customer data,
+     * otherwise an empty array.
      *
-     * @return $this
+     * @return array
      */
-    public function setShippingAddress(array $shippingAddress): self
+    public function getCustomerData()
     {
-        $this->setParameter('shipping_address', Address::fromArray($shippingAddress));
+        $data = [];
 
-        return $this;
+        $customer = $this->getCustomer();
+
+        if ($customer) {
+            $data = $customer->toArray();
+
+        }
+
+        return $data;
     }
 
     /**
-     * @param string[] $countries ISO 3166 alpha-2 codes of shipping countries
+     * Return the settings data,
      *
-     * @return $this
+     * @return array
      */
-    public function setShippingCountries(array $countries): self
+    public function getSettingsData()
     {
-        $this->setParameter('shipping_countries', $countries);
+        $data = [];
 
-        return $this;
-    }
+        $settings = $this->getSettings();
 
-    /**
-     * @param array $widgetOptions
-     *
-     * @return $this
-     */
-    public function setWidgetOptions(array $widgetOptions): self
-    {
-        $this->setParameter('widget_options', WidgetOptions::fromArray($widgetOptions));
+        if ($settings) {
+            $data = $settings->toArray();
 
-        return $this;
-    }
+        }
 
-    public function setMerchantData(array $data)
-    {
-        $this->setParameter('merchant_data', serialize($data));
-
-        return $this;
-    }
-
-    public function getMerchantData()
-    {
-        return $this->getParameter('merchant_data');
-    }
-
-    public function setAttachment(array $data)
-    {
-        $this->setParameter('attachment', $data);
-
-        return $this;
-    }
-
-    public function getAttachment()
-    {
-        return $this->getParameter('attachment');
+        return $data;
     }
 
     /**
@@ -201,67 +215,49 @@ abstract class AbstractOrderRequest extends AbstractRequest
      */
     protected function getOrderData(): array
     {
-        $data = [
-            'order_amount' => (int) $this->getAmount(),
-            'order_tax_amount' => (int) $this->getTaxAmount(),
-            'order_lines' => $this->getItemData($this->getItems() ?? new ItemBag()),
-            'purchase_currency' => $this->getCurrency(),
-            'purchase_country' => $this->getPurchaseCountry(),
-        ];
+        $customerData = $this->getCustomerData();
+        if (!empty($customerData)) {
+            $data['customer'] = $customerData;
+        }
+
+        if (null !== $country = $this->getCountry()) {
+            $data['country'] = $country;
+        }
+
+        if (null !== $currency = $this->getCurrency()) {
+            $data['currency'] = $currency;
+        }
 
         if (null !== $locale = $this->getLocale()) {
-            $data['locale'] = str_replace('_', '-', $locale);
+            $data['locale'] = $locale;
         }
 
-        if (null !== $shippingCountries = $this->getShippingCountries()) {
-            $data['shipping_countries'] = $shippingCountries;
+        if (null !== $metadata = $this->getMetadata()) {
+            $data['metadata'] = $metadata;
         }
 
-        if (null !== $shippingAddress = $this->getShippingAddress()) {
-            $data['shipping_address'] = $shippingAddress->getArrayCopy();
+        if (null !== $reference = $this->getReference()) {
+            $data['reference'] = $reference;
         }
 
-        if (null !== $billingAddress = $this->getBillingAddress()) {
-            $data['billing_address'] = $billingAddress->getArrayCopy();
+        if (null !== $settlementReference = $this->getSettlementReference()) {
+            $data['settlementReference'] = $settlementReference;
         }
 
-        if (null !== $merchantReference1 = $this->getMerchantReference1()) {
-            $data['merchant_reference1'] = $merchantReference1;
+        if (null !== $source = $this->getSource()) {
+            $data['source'] = $source;
         }
 
-        if (null !== $merchantReference2 = $this->getMerchantReference2()) {
-            $data['merchant_reference2'] = $merchantReference2;
+        if (null !== $storeId = $this->getStoreId()) {
+            $data['storeId'] = $storeId;
         }
 
-        if (null !== $widgetOptions = $this->getWidgetOptions()) {
-            $data['options'] = $widgetOptions->getArrayCopy();
+        if (null !== $orderLines = $this->getItemData($this->getItems())) {
+            $data['orderLines'] = $orderLines;
         }
-
-        if (null !== $customer = $this->getCustomer()) {
-            $data['customer'] = $customer->getArrayCopy();
-        }
-
-        if (null !== $merchantData = $this->getMerchantData()) {
-            $data['merchant_data'] = $merchantData;
-        }
-
-        if (null !== $attachment = $this->getAttachment()) {
-            $data['attachment'] = $attachment;
-        }
-
-        $guiOptions = [];
-
-        if (false === $this->getGuiAutofocus()) {
-            $guiOptions[] = 'disable_autofocus';
-        }
-
-        if ($this->getGuiMinimalConfirmation()) {
-            $guiOptions[] = 'minimal_confirmation';
-        }
-
-        if (!empty($guiOptions)) {
-            $data['gui'] = ['options' => $guiOptions];
-        }
+        $data['totalOrderAmount'] = $this->getTotalOrderAmount();
+        $data['totalOrderAmountExclVat'] = $this->totalOrderAmountExclVat();
+        $data['totalOrderVatAmount'] = $this->totalOrderVatAmount();
 
         return $data;
     }

@@ -3,47 +3,18 @@ declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer;
 
-final class Item extends \Omnipay\Common\Item implements ItemInterface
+use Nyehandel\Omnipay\Ledyer\Exceptions\InvalidItemException;
+
+final class Item extends \Omnipay\Common\Item
 {
     /**
-     * @inheritDoc
+     * Validate the item
+     *
+     * 
+     * @return void
+     * @throws Exception\InvalidRequestException
+     * @throws InvalidSettingsException
      */
-    public function getMerchantData()
-    {
-        return $this->getParameter('merchant_data');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTaxRate()
-    {
-        return $this->getParameter('tax_rate');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTotalAmount()
-    {
-        return $this->getParameter('total_amount');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTotalDiscountAmount()
-    {
-        return $this->getParameter('total_discount_amount');
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getTotalTaxAmount()
-    {
-        return $this->getParameter('total_tax_amount');
-    }
 
     /**
      * @inheritDoc
@@ -54,46 +25,6 @@ final class Item extends \Omnipay\Common\Item implements ItemInterface
     }
 
     /**
-     * @param string $data
-     */
-    public function setMerchantData($data)
-    {
-        $this->setParameter('merchant_data', $data);
-    }
-
-    /**
-     * @param int $taxRate
-     */
-    public function setTaxRate($taxRate)
-    {
-        $this->setParameter('tax_rate', $taxRate);
-    }
-
-    /**
-     * @param int $amount
-     */
-    public function setTotalAmount($amount)
-    {
-        $this->setParameter('total_amount', $amount);
-    }
-
-    /**
-     * @param int $amount
-     */
-    public function setTotalDiscountAmount($amount)
-    {
-        $this->setParameter('total_discount_amount', $amount);
-    }
-
-    /**
-     * @param int $amount
-     */
-    public function setTotalTaxAmount($amount)
-    {
-        $this->setParameter('total_tax_amount', $amount);
-    }
-
-    /**
      * @param string $type
      */
     public function setType($type)
@@ -101,13 +32,61 @@ final class Item extends \Omnipay\Common\Item implements ItemInterface
         $this->setParameter('type', $type);
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function getReference()
+    {
+        return $this->getParameter('reference');
+    }
+
+    /**
+     * @param string $reference
+     */
     public function setReference($reference)
     {
         $this->setParameter('reference', $reference);
     }
 
-    public function getReference()
+    /**
+     * @inheritDoc
+     */
+    public function getUnitDiscountAmount()
     {
-        return $this->getParameter('reference');
+        return $this->getParameter('unit_discount_amount');
+    }
+
+    /**
+     * @param int $unitDiscountAmount
+     */
+    public function setUnitDiscountAmount($unitDiscountAmount)
+    {
+        $this->setParameter('unit_discount_amount', $unitDiscountAmount);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getVat()
+    {
+        return $this->getParameter('vat');
+    }
+
+    /**
+     * @param int $unitDiscountAmount
+     */
+    public function setVat($vat)
+    {
+        $this->setParameter('vat', $vat);
+    }
+
+    public function calculateTotalVatAmount()
+    {
+        return (int) round(($this->getPrice() - $this->getPrice() / (1 + $this->getVat() / 10000)) * $this->getQuantity());
+    }
+
+    public function calculateTotalPriceExclVat()
+    {
+        return $this->getPrice() * $this->getQuantity() - $this->calculateTotalVatAmount();
     }
 }

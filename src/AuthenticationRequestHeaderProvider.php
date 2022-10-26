@@ -7,18 +7,11 @@ use Nyehandel\Omnipay\Ledyer\Message\AbstractRequest;
 
 final class AuthenticationRequestHeaderProvider
 {
-    public function getHeaders(AbstractRequest $request): array
+    public function getHeaders(string $token): array
     {
         return [
             'Authorization' => sprintf(
-                'Basic %s',
-                base64_encode(
-                    sprintf(
-                        '%s:%s',
-                        $request->getUsername(),
-                        $request->getSecret()
-                    )
-                )
+                'Bearer ' . $token
             ),
         ];
     }

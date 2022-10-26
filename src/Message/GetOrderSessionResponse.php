@@ -6,7 +6,7 @@ namespace Nyehandel\Omnipay\Ledyer\Message;
 use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Message\RequestInterface;
 
-final class AuthorizeResponse extends AbstractResponse implements RedirectResponseInterface
+final class GetOrderSessionResponse extends AbstractResponse implements RedirectResponseInterface
 {
     /**
      * @var string|null
