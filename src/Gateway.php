@@ -5,11 +5,15 @@ namespace Nyehandel\Omnipay\Ledyer;
 
 use Nyehandel\Omnipay\Ledyer\Message\AcknowledgeRequest;
 use Nyehandel\Omnipay\Ledyer\Message\AuthorizeRequest;
+use Nyehandel\Omnipay\Ledyer\Message\CancelOrderRequest;
 use Nyehandel\Omnipay\Ledyer\Message\CaptureRequest;
 use Nyehandel\Omnipay\Ledyer\Message\CreateOrderSessionRequest;
 use Nyehandel\Omnipay\Ledyer\Message\ExtendAuthorizationRequest;
 use Nyehandel\Omnipay\Ledyer\Message\FetchTransactionRequest;
+use Nyehandel\Omnipay\Ledyer\Message\FullCaptureRequest;
+use Nyehandel\Omnipay\Ledyer\Message\GetOrderRequest;
 use Nyehandel\Omnipay\Ledyer\Message\Oauth\ObtainTokenRequest;
+use Nyehandel\Omnipay\Ledyer\Message\PartialCaptureRequest;
 use Nyehandel\Omnipay\Ledyer\Message\RefundRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateCustomerAddressRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateMerchantReferencesRequest;
@@ -41,9 +45,19 @@ final class Gateway extends AbstractGateway implements GatewayInterface
         return $this->createRequest(CreateOrderSessionRequest::class, $options);
     }
 
+    public function getOrder(array $options = [])
+    {
+        return $this->createRequest(GetOrderRequest::class, $options);
+    }
+
     public function updateOrder(array $options = [])
     {
         return $this->createRequest(UpdateOrderSessionRequest::class, $options);
+    }
+
+    public function cancelOrder(array $options = [])
+    {
+        return $this->createRequest(CancelOrderRequest::class, $options);
     }
 
     /**
@@ -51,7 +65,15 @@ final class Gateway extends AbstractGateway implements GatewayInterface
      */
     public function capture(array $options = [])
     {
-        return $this->createRequest(CaptureRequest::class, $options);
+        return $this->createRequest(PartialCaptureRequest::class, $options);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function fullCapture(array $options = [])
+    {
+        return $this->createRequest(FullCaptureRequest::class, $options);
     }
 
     /**

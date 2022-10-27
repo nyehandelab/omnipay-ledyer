@@ -11,9 +11,8 @@ use Omnipay\Common\Http\Exception\RequestException;
 /**
  * Creates a Ledyer Checkout order if it does not exist
  */
-final class UpdateOrderRequest extends AbstractOrderRequest
+final class PartialCaptureRequest extends AbstractOrderRequest
 {
-
     /**
      * @inheritDoc
      *
@@ -22,23 +21,14 @@ final class UpdateOrderRequest extends AbstractOrderRequest
     public function getData()
     {
         $this->validate(
-            'transactionReference',
-            'amount',
-            'items'
+            'order_id',
+            'order_lines',
+            'total_capture_amount'
         );
 
-        $data = $this->getOrderData();
+        // TODO: Implement this!
 
-
-        return $data;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getRenderUrl()
-    {
-        return $this->getParameter('render_url');
+        return [];
     }
 
     /**
@@ -50,15 +40,11 @@ final class UpdateOrderRequest extends AbstractOrderRequest
      */
     public function sendData($data)
     {
-
-
         $response = $this->sendRequest(
-            'PATCH',
-            sprintf('/ordermanagement/v1/orders/%s/authorization', $this->getTransactionReference()),
-            $data
+            'post',
+            'orders/' . $this->getOrderId() . '/capture',
         );
 
-
-        return new UpdateOrderResponse($response->getStatusCode());
+        return new PartialCaptureResponse($this, $this->getResponseBody($response));
     }
 }

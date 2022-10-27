@@ -172,6 +172,26 @@ abstract class AbstractOrderRequest extends AbstractRequest
     }
 
     /**
+     * @return string|null
+     */
+    public function getLedyerId()
+    {
+        return $this->getParameter('ledyer_id');
+    }
+
+    /**
+     * @param string $ledyerId
+     *
+     * @return $this
+     */
+    public function setLedyerId(string $ledyerId): self
+    {
+        $this->setParameter('ledyer_id', $ledyerId);
+
+        return $this;
+    }
+
+    /**
      * If a customer is supplied, then return the customer data,
      * otherwise an empty array.
      *

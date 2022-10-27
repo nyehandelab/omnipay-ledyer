@@ -42,6 +42,6 @@ final class GetOrderSessionRequest extends AbstractOrderRequest
             $data
         );
 
-        return new GetOrderSessionRequest($this, $this->getResponseBody($response));
+        return new GetOrderSessionResponse($this, $this->getResponseBody($response));
     }
 }

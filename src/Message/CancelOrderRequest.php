@@ -11,22 +11,20 @@ use Omnipay\Common\Http\Exception\RequestException;
 /**
  * Creates a Ledyer Checkout order if it does not exist
  */
-final class UpdateOrderSessionRequest extends AbstractOrderRequest
+final class CancelOrderRequest extends AbstractOrderRequest
 {
     /**
      * @inheritDoc
      *
      * @throws InvalidRequestException
      */
-    public function getData(): array
+    public function getData()
     {
         $this->validate(
             'order_id',
         );
 
-        $data = $this->getOrderData();
-
-        return $data;
+        return [];
     }
 
     /**
@@ -36,14 +34,13 @@ final class UpdateOrderSessionRequest extends AbstractOrderRequest
      * @throws RequestException when the HTTP client is passed a request that is invalid and cannot be sent.
      * @throws NetworkException if there is an error with the network or the remote server cannot be reached.
      */
-    public function sendData($data): UpdateOrderSessionResponse 
+    public function sendData($data)
     {
         $response = $this->sendRequest(
-            'POST',
-            'sessions/' . $this->getOrderId(),
-            $data
+            'DELETE',
+            'orders/' . $this->getOrderId(),
         );
 
-        return new UpdateOrderSessionResponse($this, $this->getResponseBody($response), $response->getStatusCode());
+        return new CancelOrderResponse($this, $this->getResponseBody($response));
     }
 }

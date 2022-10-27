@@ -3,6 +3,6 @@ declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
 
-final class UpdateMerchantReferencesResponse extends AbstractResponse
+final class GetOrderResponse extends AbstractResponse
 {
 }

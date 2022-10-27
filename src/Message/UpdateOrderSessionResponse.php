@@ -9,41 +9,25 @@ use Omnipay\Common\Message\RequestInterface;
 final class UpdateOrderSessionResponse extends AbstractResponse implements RedirectResponseInterface
 {
     /**
-     * @var string|null
+     * @var int
      */
-    private $renderUrl;
+    private $statusCode;
 
     /**
      * @inheritDoc
      */
-    public function __construct(RequestInterface $request, $data, $renderUrl = null)
+    public function __construct(RequestInterface $request, $data, $statusCode)
     {
         parent::__construct($request, $data);
-        $this->renderUrl = $renderUrl;
+        $this->statusCode = $statusCode;
     }
 
     /**
-     * @inheritDoc
+     * @return int
      */
-    public function getRedirectData()
+    public function getStatusCode(): int
     {
-        return null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function getRedirectUrl()
-    {
-        return $this->renderUrl;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function isRedirect(): bool
-    {
-        return null !== $this->renderUrl;
+        return $this->statusCode;
     }
 
     /**
@@ -51,7 +35,6 @@ final class UpdateOrderSessionResponse extends AbstractResponse implements Redir
      */
     public function isSuccessful(): bool
     {
-        // Authorize is only successful once it has been acknowledged
-        return false;
+        return parent::isSuccessful() && 200 === $this->statusCode;
     }
 }
