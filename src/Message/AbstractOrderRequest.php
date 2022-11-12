@@ -80,11 +80,11 @@ abstract class AbstractOrderRequest extends AbstractRequest
     }
 
     /**
-     * @param string $metadata
+     * @param array $metadata
      *
      * @return $this
      */
-    public function setMetadata(string $metadata): self
+    public function setMetadata($metadata): self
     {
         $this->setParameter('metadata', $metadata);
 
