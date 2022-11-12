@@ -37,7 +37,7 @@ final class FullCaptureRequest extends AbstractOrderRequest
     public function sendData($data)
     {
         $response = $this->sendRequest(
-            'post',
+            'POST',
             'orders/' . $this->getOrderId() . '/capture',
         );
 
