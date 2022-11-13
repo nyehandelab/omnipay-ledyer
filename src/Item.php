@@ -96,10 +96,4 @@ final class Item extends \Omnipay\Common\Item
     {
         $this->setParameter('total_tax_amount', $amount);
     }
-
-    public function calculateTotalVatAmount()
-    {
-        $price = $this->getPrice() - $this->getUnitDiscountAmount();
-        return (int) round(($price - $price / (1 + $this->getVat() / 10000)) * $this->getQuantity());
-    }
 }
