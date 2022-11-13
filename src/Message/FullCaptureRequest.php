@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -41,6 +42,10 @@ final class FullCaptureRequest extends AbstractOrderRequest
             'orders/' . $this->getOrderId() . '/capture',
         );
 
-        return new FullCaptureResponse($this, $this->getResponseBody($response));
+        return new FullCaptureResponse(
+            $this,
+            $this->getResponseBody($response),
+            $response->getStatusCode()
+        );
     }
 }

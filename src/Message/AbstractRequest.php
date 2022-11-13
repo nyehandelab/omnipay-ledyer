@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -153,6 +154,26 @@ abstract class AbstractRequest extends BaseAbstractRequest
     }
 
     /**
+     * @return string|null
+     */
+    public function getLedyerId()
+    {
+        return $this->getParameter('ledyer_id');
+    }
+
+    /**
+     * @param string $ledyerId
+     *
+     * @return $this
+     */
+    public function setLedyerId(string $ledyerId): self
+    {
+        $this->setParameter('ledyer_id', $ledyerId);
+
+        return $this;
+    }
+
+    /**
      * @param ResponseInterface $response
      *
      * @return array
@@ -183,7 +204,7 @@ abstract class AbstractRequest extends BaseAbstractRequest
         $tokenService = new TokenService();
         $token = $tokenService->get($this->getId());
 
-        if(is_null($token) || !property_exists($token, 'expires_at') || $tokenExpired = $token->expires_at < time()) {
+        if (is_null($token) || !property_exists($token, 'expires_at') || $tokenExpired = $token->expires_at < time()) {
             if ($tokenExpired) {
                 $tokenService->invalidate($this->getId());
             }
@@ -196,14 +217,14 @@ abstract class AbstractRequest extends BaseAbstractRequest
         if ('GET' === $method) {
             return $this->httpClient->request(
                 $method,
-                $this->getBaseUrl().$url,
+                $this->getBaseUrl() . $url,
                 $headers
             );
         }
 
         return $this->httpClient->request(
             $method,
-            $this->getBaseUrl().$url,
+            $this->getBaseUrl() . $url,
             array_merge(
                 ['Content-Type' => 'application/json'],
                 $headers

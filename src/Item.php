@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer;
@@ -80,13 +81,25 @@ final class Item extends \Omnipay\Common\Item
         $this->setParameter('vat', $vat);
     }
 
-    public function calculateTotalVatAmount()
+    /**
+     * @inheritDoc
+     */
+    public function getTotalVatAmount()
     {
-        return (int) round(($this->getPrice() - $this->getPrice() / (1 + $this->getVat() / 10000)) * $this->getQuantity());
+        return $this->getParameter('total_tax_amount');
     }
 
-    public function calculateTotalPriceExclVat()
+    /**
+     * @param int $amount
+     */
+    public function setTotalVatAmount($amount)
     {
-        return $this->getPrice() * $this->getQuantity() - $this->calculateTotalVatAmount();
+        $this->setParameter('total_tax_amount', $amount);
+    }
+
+    public function calculateTotalVatAmount()
+    {
+        $price = $this->getPrice() - $this->getUnitDiscountAmount();
+        return (int) round(($price - $price / (1 + $this->getVat() / 10000)) * $this->getQuantity());
     }
 }

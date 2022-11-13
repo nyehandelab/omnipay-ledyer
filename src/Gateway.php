@@ -1,9 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer;
 
-use Nyehandel\Omnipay\Ledyer\Message\AcknowledgeRequest;
+use Nyehandel\Omnipay\Ledyer\Message\AcknowledgeOrderRequest;
 use Nyehandel\Omnipay\Ledyer\Message\AuthorizeRequest;
 use Nyehandel\Omnipay\Ledyer\Message\CancelOrderRequest;
 use Nyehandel\Omnipay\Ledyer\Message\CaptureRequest;
@@ -12,9 +13,11 @@ use Nyehandel\Omnipay\Ledyer\Message\ExtendAuthorizationRequest;
 use Nyehandel\Omnipay\Ledyer\Message\FetchTransactionRequest;
 use Nyehandel\Omnipay\Ledyer\Message\FullCaptureRequest;
 use Nyehandel\Omnipay\Ledyer\Message\GetOrderRequest;
+use Nyehandel\Omnipay\Ledyer\Message\GetOrderSessionRequest;
 use Nyehandel\Omnipay\Ledyer\Message\Oauth\ObtainTokenRequest;
 use Nyehandel\Omnipay\Ledyer\Message\PartialCaptureRequest;
-use Nyehandel\Omnipay\Ledyer\Message\RefundRequest;
+use Nyehandel\Omnipay\Ledyer\Message\PartialRefundRequest;
+use Nyehandel\Omnipay\Ledyer\Message\SetOrderReferenceRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateCustomerAddressRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateMerchantReferencesRequest;
 use Nyehandel\Omnipay\Ledyer\Message\UpdateOrderRequest;
@@ -34,7 +37,7 @@ final class Gateway extends AbstractGateway implements GatewayInterface
      */
     public function acknowledge(array $options = []): RequestInterface
     {
-        return $this->createRequest(AcknowledgeRequest::class, $options);
+        return $this->createRequest(AcknowledgeOrderRequest::class, $options);
     }
 
     /**
@@ -48,6 +51,11 @@ final class Gateway extends AbstractGateway implements GatewayInterface
     public function getOrder(array $options = [])
     {
         return $this->createRequest(GetOrderRequest::class, $options);
+    }
+
+    public function getOrderSession(array $options = [])
+    {
+        return $this->createRequest(GetOrderSessionRequest::class, $options);
     }
 
     public function updateOrder(array $options = [])
@@ -150,7 +158,7 @@ final class Gateway extends AbstractGateway implements GatewayInterface
      */
     public function refund(array $options = [])
     {
-        return $this->createRequest(RefundRequest::class, $options);
+        return $this->createRequest(PartialRefundRequest::class, $options);
     }
 
     /**
@@ -202,9 +210,9 @@ final class Gateway extends AbstractGateway implements GatewayInterface
         return $this->createRequest(UpdateTransactionRequest::class, $options);
     }
 
-    public function updateMerchantReferences(array $options = []): RequestInterface
+    public function setOrderReference(array $options = []): RequestInterface
     {
-        return $this->createRequest(UpdateMerchantReferencesRequest::class, $options);
+        return $this->createRequest(SetOrderReferenceRequest::class, $options);
     }
 
     private function setBaseUrl()

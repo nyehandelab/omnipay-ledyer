@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -12,7 +11,7 @@ use Omnipay\Common\Http\Exception\RequestException;
 /**
  * Creates a Ledyer Checkout order if it does not exist
  */
-final class UpdateOrderSessionRequest extends AbstractOrderRequest
+final class SetOrderReferenceRequest extends AbstractOrderRequest
 {
     /**
      * @inheritDoc
@@ -23,12 +22,10 @@ final class UpdateOrderSessionRequest extends AbstractOrderRequest
     {
         $this->validate(
             'order_id',
-            'total_order_amount',
-            'total_order_amount_excl_vat',
-            'total_order_vat_amount',
+            'reference',
         );
 
-        $data = $this->getOrderData();
+        $data['reference'] = $this->getReference();
 
         return $data;
     }
@@ -40,14 +37,14 @@ final class UpdateOrderSessionRequest extends AbstractOrderRequest
      * @throws RequestException when the HTTP client is passed a request that is invalid and cannot be sent.
      * @throws NetworkException if there is an error with the network or the remote server cannot be reached.
      */
-    public function sendData($data): UpdateOrderSessionResponse
+    public function sendData($data): SetOrderReferenceResponse 
     {
         $response = $this->sendRequest(
             'POST',
-            'sessions/' . $this->getOrderId(),
+            'orders/' . $this->getOrderId() . '/reference',
             $data
         );
 
-        return new UpdateOrderSessionResponse($this, $this->getResponseBody($response), $response->getStatusCode());
+        return new SetOrderReferenceResponse($this, $this->getResponseBody($response), $response->getStatusCode());
     }
 }

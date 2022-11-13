@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -25,6 +26,9 @@ final class CreateOrderSessionRequest extends AbstractOrderRequest
             'currency',
             'locale',
             'settings',
+            'total_order_amount',
+            'total_order_amount_excl_vat',
+            'total_order_vat_amount',
         );
 
         $this->getSettings()->validate();

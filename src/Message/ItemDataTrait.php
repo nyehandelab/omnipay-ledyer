@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -39,44 +40,10 @@ trait ItemDataTrait
                 'unitDiscountAmount' => (int) $item->getUnitDiscountAmount(),
                 'vat' => (int) $item->getVat(),
                 'totalAmount' => (int) $totalAmount,
-                'totalVatAmount' => (int) $item->calculateTotalVatAmount(),
+                'totalVatAmount' => (int) $item->getTotalVatAmount(),
             ];
         }
 
         return $orderLines;
-    }
-
-    protected function getTotalOrderAmount()
-    {
-        $totalOrderAmount = 0;
-
-        foreach ($this->getItems() as $item) {
-            $totalOrderAmount += $item->getQuantity() * ($item->getPrice() - $item->getUnitDiscountAmount());
-        }
-
-        return $totalOrderAmount;
-    }
-
-    protected function totalOrderAmountExclVat()
-    {
-
-        $totalOrderAmountExclVat = 0;
-
-        foreach ($this->getItems() as $item) {
-            $totalOrderAmountExclVat += $item->calculateTotalPriceExclVat();
-        }
-
-        return $totalOrderAmountExclVat;
-    }
-
-    protected function totalOrderVatAmount()
-    {
-        $totalOrderVatAmount = 0;
-
-        foreach ($this->getItems() as $item) {
-            $totalOrderVatAmount += $item->calculateTotalVatAmount();
-        }
-
-        return $totalOrderVatAmount;
     }
 }

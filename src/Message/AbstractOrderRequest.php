@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -172,21 +173,61 @@ abstract class AbstractOrderRequest extends AbstractRequest
     }
 
     /**
-     * @return string|null
+     * @return int|null
      */
-    public function getLedyerId()
+    public function getTotalOrderAmount()
     {
-        return $this->getParameter('ledyer_id');
+        return $this->getParameter('total_order_amount');
     }
 
     /**
-     * @param string $ledyerId
+     * @param int $totalOrderAmount
      *
      * @return $this
      */
-    public function setLedyerId(string $ledyerId): self
+    public function setTotalOrderAmount(int $totalOrderAmount): self
     {
-        $this->setParameter('ledyer_id', $ledyerId);
+        $this->setParameter('total_order_amount', $totalOrderAmount);
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTotalOrderAmountExclVat()
+    {
+        return $this->getParameter('total_order_amount_excl_vat');
+    }
+
+    /**
+     * @param int $totalOrderAmountExclVat
+     *
+     * @return $this
+     */
+    public function setTotalOrderAmountExclVat(int $totalOrderAmountExclVat): self
+    {
+        $this->setParameter('total_order_amount_excl_vat', $totalOrderAmountExclVat);
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getTotalOrderVatAmount()
+    {
+        return $this->getParameter('total_order_vat_amount');
+    }
+
+    /**
+     * @param int $totalOrderVatAmount
+     *
+     * @return $this
+     */
+    public function setTotalOrderVatAmount(int $totalOrderVatAmount): self
+    {
+        $this->setParameter('total_order_vat_amount', $totalOrderVatAmount);
 
         return $this;
     }
@@ -205,7 +246,6 @@ abstract class AbstractOrderRequest extends AbstractRequest
 
         if ($customer) {
             $data = $customer->toArray();
-
         }
 
         return $data;
@@ -224,7 +264,6 @@ abstract class AbstractOrderRequest extends AbstractRequest
 
         if ($settings) {
             $data = $settings->toArray();
-
         }
 
         return $data;
@@ -276,8 +315,8 @@ abstract class AbstractOrderRequest extends AbstractRequest
             $data['orderLines'] = $orderLines;
         }
         $data['totalOrderAmount'] = $this->getTotalOrderAmount();
-        $data['totalOrderAmountExclVat'] = $this->totalOrderAmountExclVat();
-        $data['totalOrderVatAmount'] = $this->totalOrderVatAmount();
+        $data['totalOrderAmountExclVat'] = $this->getTotalOrderAmountExclVat();
+        $data['totalOrderVatAmount'] = $this->getTotalOrderVatAmount();
 
         return $data;
     }

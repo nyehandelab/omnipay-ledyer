@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
 
+use Omnipay\Common\Message\RedirectResponseInterface;
 use Omnipay\Common\Message\RequestInterface;
 
-final class RefundResponse extends AbstractResponse
+final class SetOrderReferenceResponse extends AbstractResponse implements RedirectResponseInterface
 {
     /**
      * @var int
@@ -13,14 +14,11 @@ final class RefundResponse extends AbstractResponse
     private $statusCode;
 
     /**
-     * @param RequestInterface $request
-     * @param mixed            $data
-     * @param int              $statusCode
+     * @inheritDoc
      */
     public function __construct(RequestInterface $request, $data, $statusCode)
     {
         parent::__construct($request, $data);
-
         $this->statusCode = $statusCode;
     }
 
@@ -37,6 +35,6 @@ final class RefundResponse extends AbstractResponse
      */
     public function isSuccessful(): bool
     {
-        return parent::isSuccessful() && 201 === $this->statusCode;
+        return parent::isSuccessful() && 200 === $this->statusCode;
     }
 }

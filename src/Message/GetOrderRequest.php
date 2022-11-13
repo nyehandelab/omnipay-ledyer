@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Nyehandel\Omnipay\Ledyer\Message;
@@ -42,6 +43,10 @@ final class GetOrderRequest extends AbstractOrderRequest
             $data
         );
 
-        return new GetOrderResponse($this, $this->getResponseBody($response));
+        return new GetOrderResponse(
+            $this,
+            $this->getResponseBody($response),
+            $response->getStatusCode()
+        );
     }
 }
