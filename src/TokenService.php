@@ -39,6 +39,11 @@ class TokenService
 
     private function set(string $id, string $value)
     {
+        // Create Cache directory if missing
+        if (!is_dir($this->directory)) {
+            mkdir($this->directory);
+        }
+
         return file_put_contents($this->directory . md5($id), $value);
     }
 
