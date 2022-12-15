@@ -21,14 +21,12 @@ final class PartialRefundRequest extends AbstractRequest
      */
     public function getData()
     {
-        $this->validate('order_id', 'amount', 'ledyer_id');
+        $this->validate('order_id', 'amount', 'ledyer_id', 'items');
 
         $data = ['totalRefundAmount' => $this->getAmountInteger()];
         $items = $this->getItems();
 
-        if (null !== $items) {
-            $data['orderLines'] = $this->getItemData($items);
-        }
+        $data['orderLines'] = $this->getItemData($items);
 
         return $data;
     }
