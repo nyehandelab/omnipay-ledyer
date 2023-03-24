@@ -3,7 +3,7 @@
 **Ledyer Checkout driver for the Omnipay PHP payment processing library**
 
 [Omnipay](https://github.com/thephpleague/omnipay) is a framework agnostic, multi-gateway payment
-processing library for PHP. This package implements PayPal support for Omnipay.
+processing library for PHP. This package implements Ledyer Checkout support for Omnipay.
 
 ## Installation
 
