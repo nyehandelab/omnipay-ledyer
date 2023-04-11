@@ -14,6 +14,27 @@ use Omnipay\Common\Http\Exception\RequestException;
  */
 final class FullCaptureRequest extends AbstractOrderRequest
 {
+
+    /**
+     * @return int|null
+     */
+    public function getTotalCaptureAmount()
+    {
+        return $this->getParameter('total_capture_amount');
+    }
+
+    /**
+     * @param int $totalCaptureAmount
+     *
+     * @return $this
+     */
+    public function setTotalCaptureAmount(int $totalCaptureAmount): self
+    {
+        $this->setParameter('total_capture_amount', $totalCaptureAmount);
+
+        return $this;
+    }
+
     /**
      * @inheritDoc
      *
@@ -23,9 +44,16 @@ final class FullCaptureRequest extends AbstractOrderRequest
     {
         $this->validate(
             'order_id',
+            'total_capture_amount',
         );
 
-        return [];
+        if (null !== $orderLines = $this->getItemData($this->getItems())) {
+            $data['orderLines'] = $orderLines;
+        }
+
+        $data['totalCaptureAmount'] = $this->getTotalCaptureAmount();
+
+        return $data;
     }
 
     /**
@@ -40,6 +68,7 @@ final class FullCaptureRequest extends AbstractOrderRequest
         $response = $this->sendRequest(
             'POST',
             'orders/' . $this->getOrderId() . '/capture',
+            $data
         );
 
         return new FullCaptureResponse(
