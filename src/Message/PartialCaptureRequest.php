@@ -14,6 +14,26 @@ use Omnipay\Common\Http\Exception\RequestException;
 final class PartialCaptureRequest extends AbstractOrderRequest
 {
     /**
+     * @return int|null
+     */
+    public function getTotalCaptureAmount()
+    {
+        return $this->getParameter('total_capture_amount');
+    }
+
+    /**
+     * @param int $totalCaptureAmount
+     *
+     * @return $this
+     */
+    public function setTotalCaptureAmount(int $totalCaptureAmount): self
+    {
+        $this->setParameter('total_capture_amount', $totalCaptureAmount);
+
+        return $this;
+    }
+
+    /**
      * @inheritDoc
      *
      * @throws InvalidRequestException
@@ -22,13 +42,20 @@ final class PartialCaptureRequest extends AbstractOrderRequest
     {
         $this->validate(
             'order_id',
-            'order_lines',
             'total_capture_amount'
         );
 
-        // TODO: Implement this!
+        $data = [];
 
-        return [];
+        if (null !== $orderLines = $this->getItemData($this->getItems())) {
+            $data['orderLines'] = $orderLines;
+        }
+
+        $data['totalCaptureAmount'] = $this->getTotalCaptureAmount();
+
+        Log::info(json_encode($data));
+
+        return $data;
     }
 
     /**
@@ -41,10 +68,15 @@ final class PartialCaptureRequest extends AbstractOrderRequest
     public function sendData($data)
     {
         $response = $this->sendRequest(
-            'post',
-            'orders/' . $this->getOrderId() . '/capture',
+            'POST',
+            'orders/' . $this->getOrderId() . '/partialcapture',
+            $data,
         );
 
-        return new PartialCaptureResponse($this, $this->getResponseBody($response));
+        return new PartialCaptureResponse(
+            $this,
+            $this->getResponseBody($response),
+            $response->getStatusCode()
+        );
     }
 }
