@@ -47,6 +47,8 @@ final class FullCaptureRequest extends AbstractOrderRequest
             'total_capture_amount',
         );
 
+        $data = [];
+
         if (null !== $orderLines = $this->getItemData($this->getItems())) {
             $data['orderLines'] = $orderLines;
         }
