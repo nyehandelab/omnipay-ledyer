@@ -31,7 +31,7 @@ trait ItemDataTrait
 
             $totalAmount = $item->getQuantity() * ($item->getPrice() - $item->getUnitDiscountAmount());
 
-            $orderLines[] = [
+            $orderLine = [
                 'type' => $item->getType(),
                 'reference' => $item->getReference(),
                 'description' => $item->getDescription(),
@@ -42,6 +42,12 @@ trait ItemDataTrait
                 'totalAmount' => (int) $totalAmount,
                 'totalVatAmount' => (int) $item->getTotalVatAmount(),
             ];
+
+            if ($item->getId()) {
+                $orderLine['id'] = $item->getId();
+            }
+
+            $orderLines[] = $orderLine;
         }
 
         return $orderLines;
