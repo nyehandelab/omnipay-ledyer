@@ -11,11 +11,27 @@ final class Item extends \Omnipay\Common\Item
     /**
      * Validate the item
      *
-     * 
+     *
      * @return void
      * @throws Exception\InvalidRequestException
      * @throws InvalidSettingsException
      */
+
+    /**
+     * @inheritDoc
+     */
+    public function getId()
+    {
+        return $this->getParameter('id');
+    }
+
+    /**
+     * @param string $id
+     */
+    public function setId($id)
+    {
+        $this->setParameter('id', $id);
+    }
 
     /**
      * @inheritDoc
