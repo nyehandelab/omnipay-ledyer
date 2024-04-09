@@ -53,8 +53,6 @@ final class PartialCaptureRequest extends AbstractOrderRequest
 
         $data['totalCaptureAmount'] = $this->getTotalCaptureAmount();
 
-        Log::info(json_encode($data));
-
         return $data;
     }
 
